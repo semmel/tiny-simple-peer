@@ -15,7 +15,7 @@
 
 #### Simple WebRTC video, voice, and data channels
 
-This is a fork of [simple-peer](https://github.com/feross/simple-peer) which drops stream.Duplex support but retains all other functionality. This reduces the overhead of sending/receiving data channel messages and also radically reduces the bundle size of this library. The remainder of this README is the original documentation of `simple-peer` with slight modifications to reflect the changes in `tiny-simple-peer`.
+This is a fork of [simple-peer](https://github.com/feross/simple-peer) which drops `stream.Duplex` support but retains all other functionality. This reduces the overhead of sending/receiving data channel messages and also radically reduces the bundle size of this library. The remainder of this README is the original documentation of `simple-peer` with slight modifications to reflect the changes in `tiny-simple-peer`.
 
 <h5 align="center">
   Sponsored by&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://dfinity.org/"><img src="https://cdn.rawgit.com/feross/simple-peer/master/img/dfinity-sponsor.png" alt="DFINITY" width=250 valign="middle"></a>
