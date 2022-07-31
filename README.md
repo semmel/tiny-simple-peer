@@ -1,4 +1,4 @@
-# simple-peer [![ci][ci-image]][ci-url] [![coveralls][coveralls-image]][coveralls-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url] [![javascript style guide][sauce-image]][sauce-url]
+# tiny-simple-peer [![ci][ci-image]][ci-url] [![coveralls][coveralls-image]][coveralls-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url] [![javascript style guide][sauce-image]][sauce-url]
 
 [ci-image]: https://img.shields.io/github/workflow/status/feross/simple-peer/ci/master
 [ci-url]: https://github.com/feross/simple-peer/actions
@@ -14,6 +14,8 @@
 [sauce-url]: https://saucelabs.com/u/simple-peer
 
 #### Simple WebRTC video, voice, and data channels
+
+This is a fork of [simple-peer](https://github.com/feross/simple-peer) which drops stream.Duplex support but retains all other functionality. This reduces the overhead of sending/receiving data channel messages and also radically reduces the bundle size of this library. The remainder of this README is the original documentation of `simple-peer` with slight modifications to reflect the changes in `tiny-simple-peer`.
 
 <h5 align="center">
   Sponsored by&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://dfinity.org/"><img src="https://cdn.rawgit.com/feross/simple-peer/master/img/dfinity-sponsor.png" alt="DFINITY" width=250 valign="middle"></a>
@@ -63,10 +65,10 @@ npm install simple-peer
 ```
 
 This package works in the browser with [browserify](https://browserify.org). If
-you do not use a bundler, you can use the `simplepeer.min.js` standalone script
-directly in a `<script>` tag. This exports a `SimplePeer` constructor on
+you do not use a bundler, you can use the `tinysimplepeer.min.js` standalone script
+directly in a `<script>` tag. This exports a `TinySimplePeer` constructor on
 `window`. Wherever you see `Peer` in the examples below, substitute that with
-`SimplePeer`.
+`TinySimplePeer`.
 
 ## usage
 
@@ -373,21 +375,6 @@ if (Peer.WEBRTC_SUPPORT) {
 } else {
   // fallback
 }
-```
-
-### duplex stream
-
-`Peer` objects are instances of `stream.Duplex`. They behave very similarly to a
-`net.Socket` from the node core `net` module. The duplex stream reads/writes to the data
-channel.
-
-```js
-var peer = new Peer(opts)
-// ... signaling ...
-peer.write(new Buffer('hey'))
-peer.on('data', function (chunk) {
-  console.log('got a chunk', chunk)
-})
 ```
 
 ## events
