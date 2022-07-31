@@ -1,11 +1,10 @@
 /*! simple-peer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 const debug = require('debug')('simple-peer')
 const getBrowserRTC = require('get-browser-rtc')
-const randombytes = require('randombytes')
-const stream = require('readable-stream')
-const queueMicrotask = require('queue-microtask') // TODO: remove when Node 10 is not supported
+const randomstring = require('random-string')
+const queueMicrotask = require('queue-microtask')
+const EventEmitter = require('events')
 const errCode = require('err-code')
-const { Buffer } = require('buffer')
 
 const MAX_BUFFERED_AMOUNT = 64 * 1024
 const ICECOMPLETE_TIMEOUT = 5 * 1000
@@ -25,7 +24,7 @@ function warn (message) {
  * Duplex stream.
  * @param {Object} opts
  */
-class Peer extends stream.Duplex {
+class Peer extends EventEmitter {
   constructor (opts) {
     opts = Object.assign({
       allowHalfOpen: false
@@ -33,11 +32,11 @@ class Peer extends stream.Duplex {
 
     super(opts)
 
-    this._id = randombytes(4).toString('hex').slice(0, 7)
+    this.id = opts.id || randomstring({ length: 20 })
     this._debug('new peer %o', opts)
 
     this.channelName = opts.initiator
-      ? opts.channelName || randombytes(20).toString('hex')
+      ? opts.channelName || randomstring({ length: 20 })
       : null
 
     this.initiator = opts.initiator || false
@@ -424,9 +423,6 @@ class Peer extends stream.Duplex {
     this._isNegotiating = true
   }
 
-  // TODO: Delete this method once readable-stream is updated to contain a default
-  // implementation of destroy() that automatically calls _destroy()
-  // See: https://github.com/nodejs/readable-stream/issues/283
   destroy (err) {
     this._destroy(err, () => {})
   }
@@ -442,11 +438,6 @@ class Peer extends stream.Duplex {
       this.destroying = false
 
       this._debug('destroy (error: %s)', err && (err.message || err))
-
-      this.readable = this.writable = false
-
-      if (!this._readableState.ended) this.push(null)
-      if (!this._writableState.finished) this.end()
 
       this._connected = false
       this._pcReady = false
@@ -971,9 +962,7 @@ class Peer extends stream.Duplex {
 
   _onChannelMessage (event) {
     if (this.destroyed) return
-    let data = event.data
-    if (data instanceof ArrayBuffer) data = Buffer.from(data)
-    this.push(data)
+    this.emit('data', event.data)
   }
 
   _onChannelBufferedAmountLow () {
@@ -1023,7 +1012,7 @@ class Peer extends stream.Duplex {
 
   _debug () {
     const args = [].slice.call(arguments)
-    args[0] = '[' + this._id + '] ' + args[0]
+    args[0] = '[' + this.id + '] ' + args[0]
     debug.apply(null, args)
   }
 }

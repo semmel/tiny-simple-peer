@@ -30,6 +30,21 @@ test('create peer without options', function (t) {
   }
 })
 
+test('create peer with a custom id', function (t) {
+  t.plan(2)
+
+  if (process.browser) {
+    let peer
+    t.doesNotThrow(function () {
+      peer = new Peer({ id: 'hello' })
+    })
+    t.equal(peer.id, 'hello')
+    peer.destroy()
+  } else {
+    t.pass('Skip no-option test in Node.js, since the wrtc option is required')
+  }
+})
+
 test('can detect error when RTCPeerConstructor throws', function (t) {
   t.plan(1)
 
@@ -115,12 +130,12 @@ test('data send/receive text', function (t) {
 
     peer1.send('sup peer2')
     peer2.on('data', function (data) {
-      t.ok(Buffer.isBuffer(data), 'data is Buffer')
+      t.ok(typeof data === 'string', 'data is string')
       t.equal(data.toString(), 'sup peer2', 'got correct message')
 
       peer2.send('sup peer1')
       peer1.on('data', function (data) {
-        t.ok(Buffer.isBuffer(data), 'data is Buffer')
+        t.ok(typeof data === 'string', 'data is string')
         t.equal(data.toString(), 'sup peer1', 'got correct message')
 
         peer1.on('close', function () { t.pass('peer1 destroyed') })
