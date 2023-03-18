@@ -1,7 +1,7 @@
 /*! simple-peer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 import Debug from 'debug'
 import getBrowserRTC from 'get-browser-rtc'
-import randomstring from 'random-string'
+import randomstring from 'crypto-random-string'
 import EventEmitter from 'events'
 import errCode from 'err-code'
 
